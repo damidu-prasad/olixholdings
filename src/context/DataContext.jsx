@@ -1,74 +1,47 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
 const DataContext = createContext();
 export const useData = () => useContext(DataContext);
 
 const defaultData = {
-  stats: [
-    { id: 1, label: 'Clients Worldwide', value: 150, suffix: '+' },
-    { id: 2, label: 'Automations Deployed', value: 500, suffix: '+' },
-    { id: 3, label: 'Client Satisfaction', value: 98, suffix: '%' },
-    { id: 4, label: 'Industries Covered', value: 12, suffix: '+' },
-  ],
-  services: [
-    { id: 1, icon: '⚙️', title: 'End-to-End Workflow Automation', desc: 'Cross-platform orchestration. Maps and links disjointed infrastructure to execute operations seamlessly 24/7 without manual latency.', features: ['Process mapping & optimization','Multi-platform orchestration','Conditional logic workflows','Real-time monitoring dashboards'] },
-    { id: 2, icon: '🧠', title: 'Custom AI Agents & Solutions', desc: 'Tailored LLM executions. Task-specific digital assistants that navigate data schemas, qualify leads, and handle complex communications.', features: ['Custom GPT-powered agents','Lead qualification bots','Internal knowledge assistants','Multi-language support'] },
-    { id: 3, icon: '🔄', title: 'System Integration & Live Syncing', desc: 'Data pipeline integrity. Eliminating manual data entries via low-code pipelines and custom scripts for smooth cross-system data flow.', features: ['CRM & ERP integrations','Real-time data pipelines','API development & management','Legacy system modernization'] },
-    { id: 4, icon: '🚀', title: 'AI-Driven Product Engineering', desc: 'Custom business intelligence. Bespoke analytics software with ML components to auto-generate reports and surface real-time KPIs.', features: ['Custom dashboard development','Predictive analytics engines','ML model deployment','Real-time KPI monitoring'] },
-    { id: 5, icon: '📞', title: 'AI Customer Service Solutions', desc: 'Deploy intelligent customer service agents that handle inquiries 24/7, route tickets intelligently, and provide personalized support at scale.', features: ['AI chat & voice agents','Sentiment analysis','Smart ticket routing','Customer journey analytics'] },
-    { id: 6, icon: '🏦', title: 'Finance Automation', desc: 'Streamline financial operations with automated compliance checks, transaction processing, risk assessment, and intelligent reporting systems.', features: ['Automated compliance','Transaction processing','Risk analysis AI','Financial report generation'] },
-  ],
-  products: [
-    { id: 1, name: 'Olix AutoFlow', tag: 'Workflow Engine', desc: 'Our flagship workflow automation platform. Design, deploy, and monitor complex multi-step automations with a visual drag-and-drop builder.', features: ['Visual workflow builder','Conditional branching','200+ integrations','Real-time analytics'], color: '#6366f1' },
-    { id: 2, name: 'Olix AgentX', tag: 'AI Agent Platform', desc: 'Build and deploy custom AI agents powered by the latest LLMs. Train them on your data and deploy across channels.', features: ['Custom LLM training','Multi-channel deployment','Knowledge base integration','Conversation analytics'], color: '#06b6d4' },
-    { id: 3, name: 'Olix SyncHub', tag: 'Integration Platform', desc: 'Connect all your systems with real-time bidirectional syncing. Eliminate data silos and ensure accurate data everywhere.', features: ['Real-time syncing','Data transformation','Error handling & retries','Audit logging'], color: '#8b5cf6' },
-    { id: 4, name: 'Olix InsightEngine', tag: 'Analytics Suite', desc: 'AI-powered analytics that automatically surface insights, generate reports, and predict trends.', features: ['Auto-generated reports','Predictive analytics','Custom dashboards','Natural language queries'], color: '#10b981' },
-  ],
-  industries: [
-    { id: 1, icon: '🏦', name: 'Finance & Banking', desc: 'Automated compliance, risk analysis, and transaction processing' },
-    { id: 2, icon: '📞', name: 'Customer Service', desc: 'AI-powered support agents, ticket routing, and sentiment analysis' },
-    { id: 3, icon: '🏥', name: 'Healthcare', desc: 'Patient data workflows, appointment scheduling, and medical record processing' },
-    { id: 4, icon: '🛒', name: 'E-Commerce & Retail', desc: 'Inventory automation, dynamic pricing, and customer journey optimization' },
-    { id: 5, icon: '🏭', name: 'Manufacturing', desc: 'Supply chain orchestration, predictive maintenance, and quality control' },
-    { id: 6, icon: '📊', name: 'SaaS & Technology', desc: 'DevOps automation, usage analytics, and intelligent onboarding flows' },
-  ],
-  reviews: [
-    { id: 1, name: 'Sarah Mitchell', role: 'CTO, FinEdge Solutions', text: 'Olix Holdings completely transformed our financial operations. Their AI agents reduced our processing time by 80%.', rating: 5 },
-    { id: 2, name: 'James Rodriguez', role: 'VP Operations, RetailNova', text: 'The workflow automation they built for our e-commerce platform handles thousands of orders seamlessly. Revenue is up 35%.', rating: 5 },
-    { id: 3, name: 'Dr. Emily Chen', role: 'Director, MedSync Health', text: 'Their healthcare automation suite streamlined our patient intake process entirely.', rating: 5 },
-    { id: 4, name: 'Mark Thompson', role: 'CEO, ScaleForce AI', text: 'Working with Olix was a game-changer. Their custom AI agent handles our entire lead qualification pipeline.', rating: 5 },
-    { id: 5, name: 'Lisa Park', role: 'Head of CS, CloudReach', text: 'Our customer service response times dropped from hours to seconds.', rating: 5 },
-    { id: 6, name: 'David Okafor', role: 'COO, LogiStream', text: 'The system integration Olix built connected our 12 different platforms into one seamless workflow.', rating: 5 },
-  ],
-  jobs: [
-    { id: 1, title: 'Senior AI Engineer', dept: 'Engineering', location: 'Remote', type: 'Full-time', desc: 'Design and implement cutting-edge AI solutions.', active: true },
-    { id: 2, title: 'Full Stack Developer', dept: 'Engineering', location: 'Remote', type: 'Full-time', desc: 'Build and maintain our web platforms and internal tools.', active: true },
-    { id: 3, title: 'AI Sales Consultant', dept: 'Sales', location: 'Remote', type: 'Full-time', desc: 'Drive revenue by consulting with enterprise clients on AI automation.', active: true },
-    { id: 4, title: 'Automation Architect', dept: 'Operations', location: 'Remote', type: 'Full-time', desc: 'Design and architect complex workflow automations.', active: true },
-    { id: 5, title: 'UX/UI Designer', dept: 'Design', location: 'Remote', type: 'Full-time', desc: 'Create stunning interfaces for our products.', active: true },
-    { id: 6, title: 'Marketing Manager', dept: 'Marketing', location: 'Remote', type: 'Full-time', desc: 'Lead our content strategy and demand generation efforts.', active: true },
-  ],
-  bookings: [],
-  contacts: [],
-  heroTitle: 'Intelligent AI Automation Built to Scale Operations',
-  heroSubtitle: 'We design, deploy, and engineer custom AI solutions and end-to-end automated workflows that eliminate manual overhead, optimize data structures, and accelerate growth.',
-  logoImage: null,
+  stats: [], services: [], products: [], industries: [], reviews: [], jobs: [],
+  heroTitle: '', heroSubtitle: '', logoImage: null
 };
 
-function loadData() {
-  try {
-    const saved = localStorage.getItem('olix_data');
-    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
-  } catch { return defaultData; }
-}
-
 export const DataProvider = ({ children }) => {
-  const [data, setData] = useState(loadData);
+  const [data, setData] = useState(defaultData);
+  const [bookings, setBookings] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('olix_admin') === 'true');
 
   useEffect(() => {
-    localStorage.setItem('olix_data', JSON.stringify(data));
-  }, [data]);
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [contentRes, bookingsRes, contactsRes] = await Promise.all([
+        supabase.from('site_content').select('data').eq('id', 1).single(),
+        supabase.from('bookings').select('*').order('created_at', { ascending: false }),
+        supabase.from('contacts').select('*').order('created_at', { ascending: false })
+      ]);
+      
+      if (contentRes.data) setData(contentRes.data.data);
+      if (bookingsRes.data) setBookings(bookingsRes.data);
+      if (contactsRes.data) setContacts(contactsRes.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const syncContent = async (newData) => {
+    setData(newData);
+    await supabase.from('site_content').update({ data: newData }).eq('id', 1);
+  };
 
   const login = (password) => {
     if (password === 'olix2026') { setIsAdmin(true); localStorage.setItem('olix_admin', 'true'); return true; }
@@ -76,15 +49,61 @@ export const DataProvider = ({ children }) => {
   };
   const logout = () => { setIsAdmin(false); localStorage.removeItem('olix_admin'); };
 
-  const updateField = (field, value) => setData(prev => ({ ...prev, [field]: value }));
-  const addItem = (field, item) => setData(prev => ({ ...prev, [field]: [...prev[field], { ...item, id: Date.now() }] }));
-  const updateItem = (field, id, updates) => setData(prev => ({ ...prev, [field]: prev[field].map(i => i.id === id ? { ...i, ...updates } : i) }));
-  const deleteItem = (field, id) => setData(prev => ({ ...prev, [field]: prev[field].filter(i => i.id !== id) }));
-  const addBooking = (booking) => addItem('bookings', { ...booking, status: 'pending', createdAt: new Date().toISOString() });
-  const addContact = (contact) => addItem('contacts', { ...contact, status: 'unread', createdAt: new Date().toISOString() });
+  const updateField = (field, value) => syncContent({ ...data, [field]: value });
+  
+  const addItem = (field, item) => {
+    const newItem = { ...item, id: Date.now() };
+    syncContent({ ...data, [field]: [...data[field], newItem] });
+  };
+  
+  const updateItem = (field, id, updates) => {
+    if (field === 'bookings') {
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+      supabase.from('bookings').update(updates).eq('id', id).then();
+    } else if (field === 'contacts') {
+      setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+      supabase.from('contacts').update(updates).eq('id', id).then();
+    } else {
+      syncContent({ ...data, [field]: data[field].map(i => i.id === id ? { ...i, ...updates } : i) });
+    }
+  };
+  
+  const deleteItem = (field, id) => {
+    if (field === 'bookings') {
+      setBookings(prev => prev.filter(b => b.id !== id));
+      supabase.from('bookings').delete().eq('id', id).then();
+    } else if (field === 'contacts') {
+      setContacts(prev => prev.filter(c => c.id !== id));
+      supabase.from('contacts').delete().eq('id', id).then();
+    } else {
+      syncContent({ ...data, [field]: data[field].filter(i => i.id !== id) });
+    }
+  };
+  
+  const addBooking = async (booking) => {
+    const newBooking = { ...booking, status: 'pending' };
+    const { data: inserted, error } = await supabase.from('bookings').insert([newBooking]).select();
+    if (!error && inserted) setBookings(prev => [inserted[0], ...prev]);
+  };
+  
+  const addContact = async (contact) => {
+    const newContact = { ...contact, status: 'unread' };
+    const { data: inserted, error } = await supabase.from('contacts').insert([newContact]).select();
+    if (!error && inserted) setContacts(prev => [inserted[0], ...prev]);
+  };
+
+  if (loading) {
+    return <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', background: '#090a0f', color: '#fff' }}>Loading site data...</div>;
+  }
+
+  // We merge data, bookings, and contacts into a single object for backwards compatibility with the UI components
+  const contextValue = { 
+    data: { ...data, bookings, contacts }, 
+    isAdmin, login, logout, updateField, addItem, updateItem, deleteItem, addBooking, addContact 
+  };
 
   return (
-    <DataContext.Provider value={{ data, isAdmin, login, logout, updateField, addItem, updateItem, deleteItem, addBooking, addContact }}>
+    <DataContext.Provider value={contextValue}>
       {children}
     </DataContext.Provider>
   );
