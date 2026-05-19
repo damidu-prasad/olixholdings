@@ -1,19 +1,5 @@
 import React, { useState } from 'react';
-
-const openings = [
-  { title: 'Senior AI Engineer', dept: 'Engineering', location: 'Remote', type: 'Full-time',
-    desc: 'Design and implement cutting-edge AI solutions. Work with LLMs, ML pipelines, and custom model training to deliver enterprise automation products.' },
-  { title: 'Full Stack Developer', dept: 'Engineering', location: 'Remote', type: 'Full-time',
-    desc: 'Build and maintain our web platforms and internal tools. Experience with React, Node.js, and cloud infrastructure required.' },
-  { title: 'AI Sales Consultant', dept: 'Sales', location: 'Remote', type: 'Full-time',
-    desc: 'Drive revenue by consulting with enterprise clients on AI automation opportunities. Deep understanding of AI/ML concepts and business operations needed.' },
-  { title: 'Automation Architect', dept: 'Operations', location: 'Remote', type: 'Full-time',
-    desc: 'Design and architect complex workflow automations for enterprise clients. Experience with integration platforms and API design required.' },
-  { title: 'UX/UI Designer', dept: 'Design', location: 'Remote', type: 'Full-time',
-    desc: 'Create stunning, intuitive interfaces for our products and client projects. Strong portfolio in SaaS/enterprise design required.' },
-  { title: 'Marketing Manager', dept: 'Marketing', location: 'Remote', type: 'Full-time',
-    desc: 'Lead our content strategy, SEO, and demand generation efforts. Experience in B2B tech marketing with a data-driven approach.' },
-];
+import { useData } from '../context/DataContext';
 
 const values = [
   { icon: '🚀', title: 'Innovation First', desc: 'We push boundaries and embrace cutting-edge technology to deliver exceptional results.' },
@@ -23,9 +9,12 @@ const values = [
 ];
 
 const CareersPage = () => {
+  const { data } = useData();
   const [filter, setFilter] = useState('All');
-  const depts = ['All', ...new Set(openings.map(o => o.dept))];
-  const filtered = filter === 'All' ? openings : openings.filter(o => o.dept === filter);
+
+  const activeJobs = data.jobs.filter(job => job.active);
+  const depts = ['All', ...new Set(activeJobs.map(o => o.dept))];
+  const filtered = filter === 'All' ? activeJobs : activeJobs.filter(o => o.dept === filter);
 
   return (
     <div className="page-careers">
@@ -50,31 +39,47 @@ const CareersPage = () => {
 
       <section className="section">
         <h2 className="section-title">Open Positions</h2>
-        <div className="dept-filters">
-          {depts.map(d => (
-            <button key={d} className={`dept-filter ${filter === d ? 'dept-filter-active' : ''}`} onClick={() => setFilter(d)}>
-              {d}
-            </button>
-          ))}
-        </div>
-        <div className="jobs-list">
-          {filtered.map((job, i) => (
-            <div key={i} className="job-card glass">
-              <div className="job-header">
-                <div>
-                  <h3 className="job-title">{job.title}</h3>
-                  <div className="job-meta">
-                    <span className="job-badge">{job.dept}</span>
-                    <span className="job-badge">{job.location}</span>
-                    <span className="job-badge">{job.type}</span>
-                  </div>
-                </div>
-                <button className="cta-button" onClick={() => alert('Application form coming soon! Please email careers@olixholdings.com')}>Apply Now</button>
-              </div>
-              <p className="job-desc">{job.desc}</p>
+
+        {activeJobs.length === 0 ? (
+          <div className="glass" style={{ textAlign: 'center', padding: '4rem 2rem', borderRadius: '16px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👋</div>
+            <h3 style={{ marginBottom: '0.5rem' }}>No open positions right now</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>We're not actively hiring at the moment, but we're always looking for great talent. Feel free to send your resume to olixholdings@gmail.com.</p>
+          </div>
+        ) : (
+          <>
+            <div className="dept-filters">
+              {depts.map(d => (
+                <button key={d} className={`dept-filter ${filter === d ? 'dept-filter-active' : ''}`} onClick={() => setFilter(d)}>
+                  {d}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="jobs-list">
+              {filtered.map((job, i) => (
+                <div key={i} className="job-card glass">
+                  <div className="job-header">
+                    <div>
+                      <h3 className="job-title">{job.title}</h3>
+                      <div className="job-meta">
+                        <span className="job-badge">{job.dept}</span>
+                        <span className="job-badge">{job.location}</span>
+                        <span className="job-badge">{job.type}</span>
+                      </div>
+                    </div>
+                    <button className="cta-button" onClick={() => alert('Application form coming soon! Please email olixholdings@gmail.com')}>Apply Now</button>
+                  </div>
+                  <p className="job-desc">{job.desc}</p>
+                </div>
+              ))}
+            </div>
+            {filtered.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                No open positions found for {filter}.
+              </div>
+            )}
+          </>
+        )}
       </section>
 
       <section className="section perks-section">
