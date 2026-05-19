@@ -52,6 +52,7 @@ const defaultData = {
   contacts: [],
   heroTitle: 'Intelligent AI Automation Built to Scale Operations',
   heroSubtitle: 'We design, deploy, and engineer custom AI solutions and end-to-end automated workflows that eliminate manual overhead, optimize data structures, and accelerate growth.',
+  logoImage: null,
 };
 
 function loadData() {

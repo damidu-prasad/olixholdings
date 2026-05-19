@@ -11,7 +11,7 @@ const AdminLayout = () => {
 
   const links = [
     { to: '/admin', icon: '📊', label: 'Dashboard', end: true },
-    { to: '/admin/hero', icon: '🎯', label: 'Hero Section' },
+    { to: '/admin/hero', icon: '🎯', label: 'Site & Hero Settings' },
     { to: '/admin/stats', icon: '📈', label: 'Stats' },
     { to: '/admin/services', icon: '⚙️', label: 'Services' },
     { to: '/admin/products', icon: '📦', label: 'Products' },
